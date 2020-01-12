@@ -38,4 +38,9 @@ public class AuthorController {
 //        List<Author> author = new ArrayList<>();
 //        authorRepository
 //    }
+
+    @GetMapping("/author/{name}")
+    List<Author> getAuthor(@PathVariable String name) {
+        return authorRepository.findByFirstName(name);
+    }
 }

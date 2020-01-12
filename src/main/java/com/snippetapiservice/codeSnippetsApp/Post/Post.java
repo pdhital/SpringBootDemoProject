@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -38,11 +39,27 @@ public class Post {
     @Column(name = "post_content")
     private String postContent;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    @NotNull
     @JsonBackReference
     protected Author author;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(postId, post.postId) &&
+                Objects.equals(createdDate, post.createdDate) &&
+                Objects.equals(modifiedDate, post.modifiedDate) &&
+                Objects.equals(postType, post.postType) &&
+                Objects.equals(postTitle, post.postTitle) &&
+                Objects.equals(postContent, post.postContent) &&
+                Objects.equals(author, post.author);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(postId, createdDate, modifiedDate, postType, postTitle, postContent, author);
+    }
 }

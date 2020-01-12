@@ -32,6 +32,7 @@ import java.util.List;
 
         @PostMapping("/post")
         Post savePost(@RequestBody Post newPost) {
+
             return postRepository.save(newPost);
         }
 
@@ -83,6 +84,11 @@ import java.util.List;
         @DeleteMapping("/post/{id}")
         void deletePost(@PathVariable Long id) {
             postRepository.deleteById(id);
+        }
+
+        @GetMapping("/post/{types}")
+        List<Post> getPostByPostType(@PathVariable String types){
+            return postRepository.findByPostTypeIs(types);
         }
     }
 

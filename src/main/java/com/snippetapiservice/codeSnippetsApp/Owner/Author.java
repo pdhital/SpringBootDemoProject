@@ -1,15 +1,21 @@
 package com.snippetapiservice.codeSnippetsApp.Owner;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.snippetapiservice.codeSnippetsApp.Post.Post;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "author")
 public class Author {
 
@@ -26,53 +32,29 @@ public class Author {
     @Column(name = "email")
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @NotNull
     private Address address;
 
+    @OneToMany(mappedBy="author")
     @JsonManagedReference
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     protected List<Post> posts;
 
-    public Author() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Author)) return false;
+        Author author = (Author) o;
+        return Objects.equals(getAuthorId(), author.getAuthorId()) &&
+                Objects.equals(getFirstName(), author.getFirstName()) &&
+                Objects.equals(getLastName(), author.getLastName()) &&
+                Objects.equals(getEmail(), author.getEmail()) &&
+                Objects.equals(getAddress(), author.getAddress()) &&
+                Objects.equals(getPosts(), author.getPosts());
     }
 
-    public Author( Long authorId, String firstName, String lastName, String email) {
-        this.authorId = authorId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAuthorId(), getFirstName(), getLastName(), getEmail(), getAddress(), getPosts());
     }
 }
